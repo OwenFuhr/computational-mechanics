@@ -4,10 +4,10 @@ jupytext:
   text_representation:
     extension: .md
     format_name: myst
-    format_version: 0.12
-    jupytext_version: 1.6.0
+    format_version: 0.13
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -246,7 +246,19 @@ Use Python (as a calculator) to solve the following two problems:
 2. Suppose the cover price of a book is $\$ 24.95$, but bookstores get a $40\%$ discount. Shipping costs $\$3$ for the first copy and $75$ cents for each additional copy. What is the total wholesale cost for $60$ copies? Compare your answer with the solution up to 2 decimal numbers.
 
 ```{code-cell} ipython3
-
+#1
+pi = 3.14159
+r = 6.65
+volume = (4/3)*pi*r**3
+print("The volume is " + str(volume))
+#2
+cvrPrc = 24.95
+discount = 0.40
+shipinit = 3
+shipnom = 0.75
+totalOrdered = 60
+totalcost = cvrPrc*discount+shipinit+(totalOrdered-1)*(cvrPrc*discount+shipnom)
+print("Total cost is $" + str(totalcost))
 ```
 
 To reveal the answers, highlight the following line of text using the mouse:
@@ -299,7 +311,7 @@ y = 4.5
 Print the values of the variables `x` and `y`.
 
 ```{code-cell} ipython3
-
+print(x,y)
 ```
 
 Let's do some arithmetic operations with our new variables:
