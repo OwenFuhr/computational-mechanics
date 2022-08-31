@@ -129,6 +129,8 @@ def factorial_function(input_value):
 
 ```{code-cell} ipython3
 factorial_function(4)
+help(factorial_function)
+?factorial_function
 ```
 
 Defining the function with descriptive variable names and inputs helps to make the function much more useable. 
