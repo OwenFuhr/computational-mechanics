@@ -4,10 +4,10 @@ jupytext:
   text_representation:
     extension: .md
     format_name: myst
-    format_version: 0.12
-    jupytext_version: 1.6.0
+    format_version: 0.13
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -69,7 +69,12 @@ import matplotlib.pyplot as plt
 Calculate the terminal velocity for the given parameters, g=9.81 m/s$^2$, c=0.25 kg/m, m=60 kg.
 
 ```{code-cell} ipython3
+c=0.25 
+m=60
+g=9.81 
 
+v_terminal=np.sqrt(m*g/c)
+print(v_terminal)
 ```
 
 ```{code-cell} ipython3
@@ -175,7 +180,7 @@ t=[0,2,4,6,8,10,12]
 import numpy as np
 #t=np.array([0,2,4,6,8,10,12])
 # or 
-t=np.linspace(0,12,7)
+t=np.linspace(0,12,5)
 ```
 
 Now, you create a `for`-loop to solve for `v_numerical` at times 2, 4, 6, 8, 10, and 12 sec. We don't need to solve for `v_numerical` at time 0 seconds because this is the initial velocity of the object. In this example, the initial velocity is v(0)=0 m/s.
@@ -402,11 +407,12 @@ s1=1;
 N=1000
 eps=np.finfo('float64').eps
 for i in range(1,N):
-    s1+=eps/2;
+    s1+=2000000*eps;
 
 s2=1+500*eps
 print('summation 1+eps/2 over ',N,' minus 1 =',(s2-1))
 print(N/2,'*eps=',(s2-1))
+print(eps)
 ```
 
 ### Exercise
