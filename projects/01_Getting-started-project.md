@@ -135,7 +135,7 @@ Part b:
 
 ```{code-cell} ipython3
 #Extend time range on analytical solution and solve
-timebound = 50
+timebound = 20
 step = 0.1
 t_an = np.arange(0,timebound+step,step)
 #Solve Analytically
@@ -151,6 +151,54 @@ plt.legend()
 ```
 
 The temperature approaches the ambient temperature $T_a$ = 65$^{o}$F as t$\rightarrow\infty$
+
++++
+
+Part c:
+
+The time between death and temperature measurement can be found by solving the analyitical solution for time at $T = 98.6^{o}F$.
+The equation:
+$T(t) =T_a+(T(0)-T_a)e^{-Kt}$
+can be rearranged as:
+$t = -\frac {\ln{\frac{T(nominal)-T_a}{T(measured)-T_a}}}{K}$
+
+Which will give the number of hours elapsed between normal body temperature and the temperature measurement after death as a negative number
+
+```{code-cell} ipython3
+def TimeofDeath(measurementTime,measuredTemp, ambientTemp, K):
+    '''
+    This function takes measurementTime, the time of measurement in 24 hour string format HH:MM,
+    measuredTemp, the measured body temperature after death, the ambient temperature ambientTemp, and empirical
+    constant K and returns the time elapsed since death assuming a nominal body temperature of 98.6*F
+    '''
+
+    #Nominal body temp in degrees F
+    nominalTemp = 98.6
+    
+    elapsed = np.log((nominalTemp-ambientTemp)/(measuredTemp-ambientTemp))/K
+    
+    #Handle clock times
+    meastimehm = measurementTime.split(":")
+    timehm = str(elapsed).split(".")
+    
+    elhr, elmin = int(timehm[0]), round(int(timehm[1])*60,2)
+    mehr, memin = int(meastimehm[0]), int(meastimehm[1])
+    
+    if elmin > memin:
+        death_min = 60 + memin-elmin
+        elhr += 1
+    if elhr > mehr:
+        deathhr = 24 + mehr-elhr
+    else:
+        death_hr = mehr-elhr
+        death_min = memin-elmin
+    
+    time24 = str(death_hr) + ":" + str(death_min)
+    return time24, elapsed
+
+Meastime = "11:00"
+print("The time of death was {}. {:.2f} hours have elapsed since from time of death to the time of measurement.".format(TimeofDeath(Meastime,T_0,T_a,K)))
+```
 
 ```{code-cell} ipython3
 
