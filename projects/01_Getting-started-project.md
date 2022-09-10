@@ -179,25 +179,29 @@ def TimeofDeath(measurementTime,measuredTemp, ambientTemp, K):
     
     #Handle clock times
     meastimehm = measurementTime.split(":")
-    timehm = str(elapsed).split(".")
+    timehm = str(round(elapsed,2)).split(".")
     
-    elhr, elmin = int(timehm[0]), round(int(timehm[1])*60,2)
+    elhr, elmin = int(timehm[0]), int(timehm[1])
     mehr, memin = int(meastimehm[0]), int(meastimehm[1])
+    
     
     if elmin > memin:
         death_min = 60 + memin-elmin
         elhr += 1
+    else:
+        death_min = memin-elmin
     if elhr > mehr:
-        deathhr = 24 + mehr-elhr
+        death_hr = 24 + mehr-elhr
     else:
         death_hr = mehr-elhr
-        death_min = memin-elmin
     
-    time24 = str(death_hr) + ":" + str(death_min)
+    time24 = str(death_hr) + ":" + (("0" + str(death_min)) if len(str(death_min))==1 else str(death_min))
+    
     return time24, elapsed
 
 Meastime = "11:00"
-print("The time of death was {}. {:.2f} hours have elapsed since from time of death to the time of measurement.".format(TimeofDeath(Meastime,T_0,T_a,K)))
+time, elapsed = TimeofDeath(Meastime,T_0,T_a,K)
+print("The time of death in 24 hour format was {}. {:.2f} hours have elapsed since from time of death to the time of measurement.".format(time, elapsed))
 ```
 
 ```{code-cell} ipython3
