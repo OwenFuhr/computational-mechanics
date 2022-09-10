@@ -80,26 +80,77 @@ print("findK(initialTemp, finalTemp, ambientTemp, t_elapsed) calculates K as {} 
     
     c. At what time was the corpse 98.6$^{o}$F? i.e. what was the time of death?
 
++++
+
+Part a:
+
 ```{code-cell} ipython3
-#Time step in hours
-step = 0.5
+#Solving Analytically
+#Create a time range with fine steps from zero to the given elapsed time
+t_an = np.arange(0,dt+.1,0.1)
+#Solve Analytically
+T_analytical = T_a +(T_0-T_a)*np.exp(-K*t_an)
 
-#Create time range with time step 'step'
-t = np.arange(0, dt, step)
+#Solving Numerically
+step = 8
+Graphs = 4
+for i in range(Graphs):
+    #Time step in hours for euler integration
+    step = step/4
 
-#Create an array of zeors to iterate over
-T_euler=np.zeros(len(t))
+    #Create new time range with time step 'step'
+    t_nu = np.arange(0, dt+step,step)
 
-#Set initial temperature to the given value
-T_euler[0]=T_0
+    #Create array of zeros to place temperature values in
+    T_euler = np.zeros(len(t_nu))
 
-for i in range(1,len(t)):
-        T_euler[i]=T_euler[i-1]-K*(T_euler[i-1]-T_a)*step
+    #Set the initial temperature to the given value
+    T_euler[0] = T_0
 
-#Plot Analytical Values
-plt.plot(t, T_euler, "o", label="Numerical Solution")
+    for i in range(1,len(t_nu)):
+            T_euler[i]=T_euler[i-1]-K*(T_euler[i-1]-T_a)*step
+    #Create a new figure each loop with a larger size than default
+    plt.figure(i+1,figsize=(8,5))
+    plt.plot(t_nu, T_euler,"ro",label="Numerical Solution with {} steps".format(len(t_nu)))
+
+    #Plot Analytical Solution
+    plt.plot(t_an, T_analytical, "b-", label="Analyitical Solution")
+    
+    #Plot Measured Values
+    plt.plot(0,T_0,"ks")
+    plt.plot(2,T, "ks",label="Measured Values")
+
+    #Label Axes
+    plt.xlabel("Time elapsed (hours)")
+    plt.ylabel("Temperature ($\degree$F)")
+    plt.title("Temperature vs. Time")
+    plt.legend()
+```
+
+As seen above, the numerical solution converges to the analytical solution as the space between the time steps decreases.
+
++++
+
+Part b:
+
+```{code-cell} ipython3
+#Extend time range on analytical solution and solve
+timebound = 50
+step = 0.1
+t_an = np.arange(0,timebound+step,step)
+#Solve Analytically
+T_analytical = T_a +(T_0-T_a)*np.exp(-K*t_an)
+
+plt.plot(t_an,T_analytical,"b-",label="Analytical Solution")
+
+#Label Axes
+plt.xlabel("Time elapsed (hours)")
+plt.ylabel("Temperature ($\degree$F)")
+plt.title("Temperature vs. Time")
 plt.legend()
 ```
+
+The temperature approaches the ambient temperature $T_a$ = 65$^{o}$F as t$\rightarrow\infty$
 
 ```{code-cell} ipython3
 
