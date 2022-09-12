@@ -132,7 +132,7 @@ for i in range(Graphs):
          "The error between the analytical and numerical solutions is " + str(T_analytical[-1]-T_euler[-1]) + "*F\n\n")
 ```
 
-As seen above, the numerical solution converges to the analytical solution as the space between the time steps decreases, and has the same error with the measured value.
+As seen above, the numerical solution converges to the analytical solution as the space between the time steps decreases, and approaches the same error with the measured value as the analytical solution. Both solutions can be said to be valid.
 
 +++
 
@@ -161,13 +161,13 @@ The temperature approaches the ambient temperature $T_a$ = 65$^{o}$F as t$\right
 
 Part c:
 
-The time between death and temperature measurement can be found by solving the analyitical solution for time at $T = 98.6^{o}F$.
+Since the analyitical and numerical solutions have been shown to be equivalent, the time between death and temperature measurement can be found by solving the analyitical solution for time at $T = 98.6^{o}F$.
 The equation:
 $T(t) =T_a+(T(0)-T_a)e^{-Kt}$
 can be rearranged as:
 $t = -\frac {\ln{\frac{T(nominal)-T_a}{T(measured)-T_a}}}{K}$
 
-Which will give the number of hours elapsed between normal body temperature and the temperature measurement after death as a negative number
+Which will give the number of hours elapsed between normal body temperature and the temperature measurement after death as a negative number. The function below drops the negative sign to give the elapsed time since death, and given a time of measurement in 24 hour format will output the corresponding time of death in 24 hour format.
 
 ```{code-cell} ipython3
 def TimeofDeath(measurementTime,measuredTemp, ambientTemp, K):
