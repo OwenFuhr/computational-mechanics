@@ -125,9 +125,14 @@ for i in range(Graphs):
     plt.ylabel("Temperature ($\degree$F)")
     plt.title("Temperature vs. Time")
     plt.legend()
+    
+    #Print Error
+    print(str(step)+ " hour step size:\nThe error between the analytical solution and measured value is " + str(T-T_analytical[-1]) + "*F\n",
+         "The error between the numerical solution and the measured value is " + str(T-T_euler[-1]) + "*F\n",
+         "The error between the analytical and numerical solutions is " + str(T_analytical[-1]-T_euler[-1]) + "*F\n\n")
 ```
 
-As seen above, the numerical solution converges to the analytical solution as the space between the time steps decreases.
+As seen above, the numerical solution converges to the analytical solution as the space between the time steps decreases, and has the same error with the measured value.
 
 +++
 
