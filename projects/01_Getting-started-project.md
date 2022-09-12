@@ -65,7 +65,8 @@ def findK(initialTemp, finalTemp, ambientTemp, t_elapsed):
 ```
 
 ```{code-cell} ipython3
-print("findK(initialTemp, finalTemp, ambientTemp, t_elapsed) calculates K as {} for the given values of: \ninitialTemp = {} *F\nfinalTemp = {} *F\nambientTemp = {} *F\nt_elapsed = {} hrs ".format(findK(T_0, T, T_a, dt),T_0, T, T_a, dt))
+print('''findK(initialTemp, finalTemp, ambientTemp, t_elapsed) calculates K as {} for the given values of:
+initialTemp = {} *F\nfinalTemp = {} *F\nambientTemp = {} *F\nt_elapsed = {} hrs '''.format(findK(T_0, T, T_a, dt),T_0, T, T_a, dt))
 ```
 
 3. A first-order thermal system has the following analytical solution, 
