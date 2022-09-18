@@ -5,9 +5,9 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.10.3
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -63,7 +63,7 @@ import numpy as np
 import pandas as pd
 ```
 
-To load our data from the file, you'll use the function [`numpy.loadtxt()`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.loadtxt.html), which lets us immediately save the data into NumPy arrays. (We encourage you to read the documentation for details on how the function works.) Here, you'll save the data into the arrays `year` and `temp_anomaly`. 
+To load our data from the file, you'll use the function [`numpy.loadtxt()`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.loadtxt.html), which lets us immediately save the data into NumPy arrays. (We encourage you to read the documentation for details on how the function works.) Here, you'll save the data into the arrays `year` and `temp_anomaly`.
 
 ```{code-cell} ipython3
 fname = '../data/land_global_temperature_anomaly-1880-2016.csv'
@@ -116,7 +116,7 @@ $$
 The notation above means that $f$ is a function of $x$, with $m+1$ variable parameters $a_0, a_1, ... , a_m$, where $m < n$. You need to choose the form of $f(x)$ _a priori_, by inspecting the experimental data and knowing something about the phenomenon you've measured. Thus, curve fitting consists of two steps: 
 
 1. Choosing the form of $f(x)$.
-2. Computing the parameters that will give us the "best fit" to the data. 
+2. Computing the parameters that will give us the "best fit" to the data.
 
 +++
 
@@ -148,7 +148,7 @@ $$
 \end{equation*}~~~~~~(3)
 $$
 
-which results in equations (2) being linear. In the case that the fitting function is polynomial, you have have $f_0(x) = 1, \; f_1(x) = x, \; f_2(x) = x^2$, and so on.  
+which results in equations (2) being linear. In the case that the fitting function is polynomial, you have have $f_0(x) = 1, \; f_1(x) = x, \; f_2(x) = x^2$, and so on.
 
 +++
 
@@ -277,7 +277,7 @@ In our case, the `x`-data corresponds to `Year`, and the `y`-data is `Value`. To
 
 It is good coding practice to *avoid repeating* ourselves: you want to write code that is reusable, not only because it leads to less typing but also because it reduces errors. If you find yourself doing the same calculation multiple times, it's better to encapsulate it into a *function*. 
 
-Remember the _key concept_ from [02_Working_with_Python](../module_01/02_Working_with_Python): A function is a compact collection of code that executes some action on its arguments. 
+Remember the _key concept_ from [02_Working_with_Python](../module_01/02_Working_with_Python): A function is a compact collection of code that executes some action on its arguments.
 
 +++
 
@@ -303,14 +303,13 @@ Our coefficients are:
 
 $$
     a_1 = \frac{ \sum_{i=0}^{n} y_{i} (x_i - \bar{x})}{\sum_{i=0}^{n} x_i (x_i - \bar{x})} \quad , \quad a_0  = \bar{y} - a_1\bar{x}
-$$ 
+$$
 
 +++
 
 We already calculated the mean values of the data arrays, but the formula requires two sums over new derived arrays. Guess what, NumPy has a built-in function for that: [`numpy.sum()`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.sum.html). Study the code below.
 
 ```{code-cell} ipython3
-
 xi = temp_data['Year'].values
 yi = temp_data['Value'].values
 
@@ -381,7 +380,7 @@ Let's call `reg` the array obtined from evaluating $f(x_i)$ for all years.
 reg = a_0 + a_1 * xi
 ```
 
-With the values of our linear regression, you can plot it on top of the original data to see how they look together. Study the code below. 
+With the values of our linear regression, you can plot it on top of the original data to see how they look together. Study the code below.
 
 ```{code-cell} ipython3
 plt.figure(figsize=(10, 5))
@@ -429,13 +428,13 @@ The assignment `f_linear = np.poly1d((a_1n,a_0n))` creates a 1D polynomial. This
 f_linear = lambda x: a_1n*x + a_0n
 ```
 
-In the line of code given above, you create the same assignment for `f_linear(x)`. One benefit of writing this out yourself is that you can see how each input is used directly. 
+In the line of code given above, you create the same assignment for `f_linear(x)`. One benefit of writing this out yourself is that you can see how each input is used directly.
 
 +++
 
 ## Exercise
 
-Use the `lambda` function to assign `f_linear` to our 1D polynomial instead of the `np.poly1d` assignment. 
+Use the `lambda` function to assign `f_linear` to our 1D polynomial instead of the `np.poly1d` assignment.
 
 ```{code-cell} ipython3
 f_linear = lambda x: a_1n*x+a_0n
@@ -460,7 +459,7 @@ If you look at the plot above, you might notice that around 1970 the temperature
 
 What if you break the data in two (before and after 1970) and do a linear regression in each segment? 
 
-To do that, you first need to find the position in our `year` array where the year 1970 is located. Thankfully, NumPy has a function called  [`numpy.where()`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.where.html) that can help us. You pass a condition and `numpy.where()` tells us where in the array the condition is `True`. 
+To do that, you first need to find the position in our `year` array where the year 1970 is located. Thankfully, NumPy has a function called  [`numpy.where()`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.where.html) that can help us. You pass a condition and `numpy.where()` tells us where in the array the condition is `True`.
 
 ```{code-cell} ipython3
 np.where(xi==1970)
