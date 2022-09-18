@@ -429,12 +429,19 @@ def var_pythonic(array):
     -------
     var   : float, variance of the array .
     """
+    sum_sqr = 0 
+    mean = np.mean(array)
     
-    return var
+    sum_sqr = np.sum((array-mean)**2)
+    
+    N = len(array)
+    var_pythonic = sum_sqr / (N - 1)
+    
+    return var_pythonic
 ```
 
 ```{code-cell} ipython3
-
+print(sample_var(abv), var_pythonic(abv))
 ```
 
 You have the sample variance, so you take its square root to get the
@@ -598,7 +605,7 @@ Play around with the plots, change the values of the bins, colors, etc.
 pyplot.figure(figsize=(10,5))
 
 #Plotting
-pyplot.hist(ibu, bins=20, color=(0.9, 0.1, 0.3, 0.6), histtype='bar', edgecolor='white') 
+pyplot.hist(ibu, bins=10, color=(0.9, 0.1, 0.3, 0.6), histtype='bar', edgecolor='white') 
 #pyplot.hist(ibu, bins=20, color=(0.9, 0.8, 0, 0.1), histtype='bar', edgecolor='white') 
 #pyplot.hist(ibu, bins=20, color=(0.1, 0.1, 0, 0.1), histtype='bar', edgecolor='white') 
 #The \n is to leave a blanck line between the title and the plot
@@ -651,7 +658,7 @@ how the following piece of code works.
 2. Check what happens if you sum booleans. For example, `True + True`, `True + False` and so on.
 
 ```{code-cell} ipython3
-
+False*True
 ```
 
 Now, using the same idea, you will calculate the number of elements in each interval of width $(1\sigma, 2\sigma, 3\sigma)$, and get the corresponding percentage. 
