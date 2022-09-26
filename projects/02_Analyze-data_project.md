@@ -268,5 +268,52 @@ plt.ylabel('Price at Open (USD)');
 Looking at this data it looks like a stable downwards trend begins to appear in mid-2013. To narrow down the inflection point I will graph the data from 2013 onward.
 
 ```{code-cell} ipython3
+#get a look at the data by plotting it
+plt.figure(figsize=(10,5))
+ford_2013plus = ford_data[ford_data['date']>pd.to_datetime('2013-01-01')]
+dates2013 = ford_2013plus['date']
+open_prices2013 = ford_2013plus['open']
+plt.plot(dates2013, open_prices2013)
+plt.xlabel('Date')
+plt.ylabel('Price at Open (USD)');
+```
+
+Based on this plot I will constrain my analysis to July 2013 and beyond, as this seems to have a stable trend that is continuing until the end of the graph.
+
+```{code-cell} ipython3
+#Get data from July 2013 onward.
+ford_AnData = ford_data[ford_data['date']>pd.to_datetime('2013-07-01')]
+
+#Find change in opening price over the time period
+dprice = np.diff(ford_AnData['open'])
+
+#Plot on a graph
+plt.figure(figsize=(10,5))
+plt.plot(ford_AnData['date'][1:], dprice)
+plt.xlabel('date')
+plt.ylabel('change in opening price (\$/day)');
+```
+
+```{code-cell} ipython3
+#Find the average change over the time period
+mean_dprice = np.mean(dprice)
+
+#Find the standard deviation over the time period
+std_dprice = np.std(dprice)
+
+#Create a normal distribution with the given data
+x = np.linspace(-2, 2)
+from scipy import stats
+price_pdf = stats.norm.pdf(x, loc = mean_dprice, scale = std_dprice)
+
+plt.figure(figsize=(8,5))
+plt.hist(dprice, 50, density=True)
+plt.plot(x, price_pdf)
+plt.title('F (Ford Motor Co.) changes in price\n'+
+         'avg: \${:.4f} stdev: \${:.2f}'.format(mean_dprice, std_dprice));
+plt.xlabel('Open price (USD)');
+```
+
+```{code-cell} ipython3
 
 ```
