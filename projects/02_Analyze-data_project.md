@@ -249,7 +249,7 @@ Here are the list of stocks in this dataset:
        'YUM', 'ZBH', 'ZION', 'ZTS'
 
 ```{code-cell} ipython3
-# Random-walk analysis for 'F' (Ford Motor Co.)
+# Random-walk analysis for 'F' (Ford Motor Co.) - The work below is adapted from the code above
 #Assuming Imports made previously
 ford_data = data[data['symbol'] == 'F']
 ford_data
@@ -315,7 +315,42 @@ plt.hist(dprice, 50, density=True)
 plt.plot(x, price_pdf)
 plt.title('F (Ford Motor Co.) changes in price\n'+
          'avg: \${:.4f} stdev: \${:.2f}'.format(mean_dprice, std_dprice));
-plt.xlabel('Open price (USD)');
+plt.xlabel('Open price change (USD)');
+```
+
+### Modeling
+
+I will now generate several sets of random numbers that have the same mean and standard deviation as the normal distribution of the real open price changes. This will provide a set of possible scenarios that the stock could have followed over the same time period, and will provide a way to tenatively estimate the future price of the stock.
+
+```{code-cell} ipython3
+#Generating the models, going with a random seed
+rng = default_rng()
+
+#Specifying the number of models to be generated, generating random models with the same mean and std
+N_models = 100
+dprice_model = rng.normal(size = (len(ford_AnData), N_models), loc = mean_dprice, scale = std_dprice)
+
+#Plotting the real price change, normal dist fit, and the 50th generated model
+plt.hist(dprice, 50, density=True, label = 'NYSE data')
+plt.plot(x, price_pdf)
+plt.hist(dprice_model[:, 49], 50, density = True, 
+         histtype = 'step', 
+         linewidth = 3, label = 'model prediction 50')
+plt.title('Ford price changes since July 2013\n'+
+         'avg: \${:.4f} stdev: \${:.2f}'.format(mean_dprice, std_dprice))
+plt.legend();
+```
+
+```{code-cell} ipython3
+price_model = np.cumsum(dprice_model, axis = 0) + ford_AnData['open'].values[0]
+plt.figure(figsize=(8,5))
+plt.plot(ford_AnData['date'], price_model, alpha = 0.3);
+
+plt.plot(ford_AnData['date'], ford_AnData['open'], c = 'k', label = 'NYSE data')
+plt.title('100 models of Ford Motor Co. stock price\nfrom 2013 to 2017')
+plt.xlabel('date')
+plt.ylabel('opening price (\$)')
+plt.legend();
 ```
 
 ```{code-cell} ipython3
