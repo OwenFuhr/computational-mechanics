@@ -259,7 +259,9 @@ ford_data
 #get a look at the data by plotting it
 dates = ford_data['date']
 open_prices = ford_data['open']
+plt.figure(figsize=(8,5))
 plt.plot(dates, open_prices)
+plt.title("Price at Market Open vs. Date")
 plt.xlabel('Date')
 plt.ylabel('Price at Open (USD)');
 ```
@@ -268,12 +270,13 @@ plt.ylabel('Price at Open (USD)');
 Looking at this data it looks like a stable downwards trend begins to appear in mid-2013. To narrow down the inflection point I will graph the data from 2013 onward.
 
 ```{code-cell} ipython3
-#get a look at the data by plotting it
+#Focus in on the data past 2013
 plt.figure(figsize=(10,5))
 ford_2013plus = ford_data[ford_data['date']>pd.to_datetime('2013-01-01')]
 dates2013 = ford_2013plus['date']
 open_prices2013 = ford_2013plus['open']
 plt.plot(dates2013, open_prices2013)
+plt.title('Price at Market Open vs. Date (2013+)')
 plt.xlabel('Date')
 plt.ylabel('Price at Open (USD)');
 ```
@@ -281,7 +284,7 @@ plt.ylabel('Price at Open (USD)');
 Based on this plot I will constrain my analysis to July 2013 and beyond, as this seems to have a stable trend that is continuing until the end of the graph.
 
 ```{code-cell} ipython3
-#Get data from July 2013 onward.
+#Isolate data from July 2013 onward.
 ford_AnData = ford_data[ford_data['date']>pd.to_datetime('2013-07-01')]
 
 #Find change in opening price over the time period
@@ -290,8 +293,9 @@ dprice = np.diff(ford_AnData['open'])
 #Plot on a graph
 plt.figure(figsize=(10,5))
 plt.plot(ford_AnData['date'][1:], dprice)
+plt.title('Change in opening price vs. Date')
 plt.xlabel('date')
-plt.ylabel('change in opening price (\$/day)');
+plt.ylabel('Change in opening price (\$/day)');
 ```
 
 ```{code-cell} ipython3
