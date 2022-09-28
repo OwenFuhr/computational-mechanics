@@ -296,6 +296,11 @@ plt.plot(ford_AnData['date'][1:], dprice)
 plt.title('Change in opening price vs. Date')
 plt.xlabel('date')
 plt.ylabel('Change in opening price (\$/day)');
+
+percup = np.sum(dprice>0)/len(dprice)*100
+percdwn = np.sum(dprice>0)/len(dprice)*100
+print('''{:.4f}% of days the market opened above the close of the previous day,
+{:.4f}% of days opened below the close of the previous day, {:0.4f}% opened at the close of the previous day'''.format(percup, percdwn, 100-abs(percup+percdwn)))
 ```
 
 ```{code-cell} ipython3
@@ -316,8 +321,16 @@ plt.plot(x, price_pdf)
 plt.title('F (Ford Motor Co.) changes in price\n'+
          'avg: \${:.4f} stdev: \${:.2f}'.format(mean_dprice, std_dprice));
 plt.xlabel('Open price change (USD)');
+
+#Creaing a box plot for the opening data, visualizing the outliers and average
+plt.figure(figsize=(8,5))
+plt.boxplot(dprice,patch_artist=True)
+plt.title('Box Plot of change in opening price from 07-2013+')
+plt.ylabel('Price change on market open (USD)');
 ```
 
+### Analysis
+The box plot of the stock data shows that Ford Motor company is a stable stock with an average change at opening slightly below 0.
 ### Modeling
 
 I will now generate several sets of random numbers that have the same mean and standard deviation as the normal distribution of the real open price changes. This will provide a set of possible scenarios that the stock could have followed over the same time period, and will provide a way to tenatively estimate the future price of the stock.
@@ -339,6 +352,12 @@ plt.hist(dprice_model[:, 49], 50, density = True,
 plt.title('Ford price changes since July 2013\n'+
          'avg: \${:.4f} stdev: \${:.2f}'.format(mean_dprice, std_dprice))
 plt.legend();
+
+#Creaing a box plot for the 50th model
+plt.figure(figsize=(8,5))
+plt.boxplot(dprice_model[:, 49],patch_artist=True)
+plt.title('Box Plot of change in opening price (50th random model)')
+plt.ylabel('Price change on market open (USD)');
 ```
 
 ```{code-cell} ipython3
