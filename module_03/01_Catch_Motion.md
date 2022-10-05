@@ -5,9 +5,9 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.10.3
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -151,7 +151,15 @@ Notice that in the previous code cell, you created an empty list named `coords`,
 Click with your mouse on the endpoints of the white lines of the metered panel (click on the edge of the panel to get approximately equal $x$ coordinates), then print the contents of the `coords` list below.
 
 ```{code-cell} ipython3
-coords
+coords = [[721.034090909091, 60.99755007260819],
+ [721.034090909091, 110.67287474793284],
+ [718.112012987013, 172.0365111115691],
+ [732.7224025974026, 250.932615007673],
+ [721.034090909091, 338.5949526700107],
+ [721.034090909091, 455.4780695531275],
+ [721.034090909091, 569.4391085141665],
+ [715.1899350649351, 724.3092383842963],
+ [721.034090909091, 876.2572903323482]]
 ```
 
 The $x$ coordinates are pretty close, but there is some variation due to
@@ -232,7 +240,16 @@ connectId = fig.canvas.mpl_connect('button_press_event', onclick)
 Click on the locations of the _ghost_ ball locations in the image above to populate `coords` with x-y-coordinates for the ball's location.
 
 ```{code-cell} ipython3
-coords # view the captured ball positions
+coords = [[726.8782467532467, 57.618897475205586],
+ [726.8782467532467, 95.60591046221862],
+ [721.034090909091, 118.98253383884185],
+ [721.034090909091, 174.5020143583224],
+ [718.112012987013, 253.39811825442632],
+ [721.034090909091, 338.13837799468604],
+ [721.034090909091, 452.099416955725],
+ [721.034090909091, 583.5929234492314],
+ [723.9561688311687, 723.8526637089717],
+ [721.034090909091, 881.6448715011795]] # view the captured ball positions
 ```
 
 Scale the vertical displacements of the falling ball as explained above (to get distance in meters), then use the known time between flashes of the strobe light, $1/16.8\rm{s}$, to compute estimates of the velocity and acceleration of the ball at every captured instant, using:
@@ -331,7 +348,11 @@ connectId = fig.canvas.mpl_connect('button_press_event', onclick)
 Grab the coordinates of the 0, 10, 20, 30, 40, ..., 100-cm vertical positions so you can create a vertical conversion from pixels to centimeters with `gap_lines2`.
 
 ```{code-cell} ipython3
-coords
+coords=[[342.610632183908, 49.756214361081334],
+ [342.610632183908, 91.13552470590889],
+ [342.610632183908, 134.81368562544912],
+ [342.610632183908, 176.19299597027668],
+ [342.610632183908, 219.87115688981692]]
 ```
 
 ```{code-cell} ipython3
@@ -379,7 +400,38 @@ widgets.interact(catchclick, frame=selector);
 ```
 
 ```{code-cell} ipython3
-coords # view the pixel coordinates of the projectile
+coords = [[295.87931034482756, 96.58333333333348],
+ [417.7183908045977, 114.97413793103465],
+ [417.7183908045977, 119.57183908045988],
+ [417.7183908045977, 119.57183908045988],
+ [417.7183908045977, 119.57183908045988],
+ [417.7183908045977, 119.57183908045988],
+ [417.7183908045977, 119.57183908045988],
+ [534.9597701149424, 175.5105247059089],
+ [534.9597701149424, 177.04310344827593],
+ [534.9597701149424, 177.04310344827593],
+ [534.9597701149424, 177.04310344827593],
+ [534.9597701149424, 177.04310344827593],
+ [534.9597701149424, 177.04310344827593],
+ [652.2011494252873, 275.89367816091965],
+ [649.9022988505747, 275.89367816091965],
+ [649.9022988505747, 275.89367816091965],
+ [649.9022988505747, 275.89367816091965],
+ [649.9022988505747, 275.89367816091965],
+ [649.9022988505747, 275.89367816091965],
+ [771.7413793103448, 410.759572697782],
+ [769.4425287356321, 409.2270114942529],
+ [769.4425287356321, 409.2270114942529],
+ [769.4425287356321, 409.2270114942529],
+ [769.4425287356321, 409.2270114942529],
+ [769.4425287356321, 409.2270114942529],
+ [888.9827586206895, 582.4070764300467],
+ [888.9827586206895, 582.4070764300467],
+ [888.9827586206895, 582.4070764300467],
+ [888.9827586206895, 582.4070764300467],
+ [888.9827586206895, 582.4070764300467],
+ [888.9827586206895, 582.4070764300467]] 
+# view the pixel coordinates of the projectile
 ```
 
 Now, convert the positions in pixels to meters, using your scaling for

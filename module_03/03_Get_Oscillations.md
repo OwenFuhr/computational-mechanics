@@ -5,9 +5,9 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.10.3
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -65,8 +65,7 @@ def eulerstep(state, rhs, dt):
 
 A prototypical mechanical system is a mass $m$ attached to a spring, in the simplest case without friction. The elastic constant of the spring, $k$, determines the restoring force it will apply to the mass when displaced by a distance $x$. The system then oscillates back and forth around its position of equilibrium.
 
-<img src="../images/spring-mass.png" style="width: 400px;"/> 
-
+<img src="../images/spring-mass.png" style="width: 400px;"/>
 
 +++
 
@@ -193,7 +192,7 @@ x_an = x0*np.cos(w * t)
 fig = plt.figure(figsize=(6,4))
 
 plt.plot(t, num_sol[:, 0], linewidth=2, linestyle='--', label='Numerical solution')
-plt.plot(t, x_an, linewidth=1, linestyle='-', label='Analytical solution')
+plt.plot(t, x_an, linewidth=2, linestyle='-', label='Analytical solution')
 plt.xlabel('Time [s]')
 plt.ylabel('$x$ [m]')
 plt.title('Spring-mass system with Euler\'s method (dashed line).\n');
@@ -558,7 +557,7 @@ $y_{i+1}=y_{i}+f(t_{i},y_{i}) \Delta t$
 $y_{i+1}=y_{i}+
 \frac{f(t_{i},y_{i})+f(t_{i+1},y_{i+1})}{2} \Delta t$
 
-The error is $ error \propto \Delta t^2.$ This is the same convergence as the Modified Euler's method. Let's compare the two methods. 
+The error is $ error \propto \Delta t^2.$ This is the same convergence as the Modified Euler's method. Let's compare the two methods.
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
@@ -576,9 +575,7 @@ This extra step introduces the topic of solving a nonlinear problem with
 a computer. How can you solve an equation if the value you want is also
 part of our function? You'll take a look at methods to solve this next
 module, but for now lets set a tolerance `etol` for the _implicit_ Heun
-method and see what the resulting solution is. 
-
-
+method and see what the resulting solution is.
 
 ```{code-cell} ipython3
 def heun_step(state,rhs,dt,etol=0.000001,maxiters = 100):
@@ -613,7 +610,7 @@ def heun_step(state,rhs,dt,etol=0.000001,maxiters = 100):
 
 The __benefit__ of an implicit solution is that it is a __stable__ solution. When you solve a set of differential equations, many times it may not be apparent what time step to choose. If you use an _implicit_ integration method, then it may converge at the same rate as an _explicit_ method, but it will always provide bounded errors. 
 
-Consider the spring-mass equation if timesteps are large, in this case you have 10 steps/time period, then the second order Runge-Kutta that you defined above has the same increasing error as the Euler method. 
+Consider the spring-mass equation if timesteps are large, in this case you have 10 steps/time period, then the second order Runge-Kutta that you defined above has the same increasing error as the Euler method.
 
 ```{code-cell} ipython3
 ---
@@ -664,7 +661,7 @@ plt.legend();
 
 ## Discussion
 
-Change the number of steps per time period in the above solutions for the second order Runge Kutta and the implicit Heun's method. Why do you think the implicit method does not have an increasing magnitude of oscillation? 
+Change the number of steps per time period in the above solutions for the second order Runge Kutta and the implicit Heun's method. Why do you think the implicit method does not have an increasing magnitude of oscillation?
 
 ```{code-cell} ipython3
 

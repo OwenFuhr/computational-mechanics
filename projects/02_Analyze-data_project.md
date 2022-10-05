@@ -373,5 +373,54 @@ plt.legend();
 ```
 
 ```{code-cell} ipython3
+price_model_avg = np.mean(price_model, axis = 1)
+price_model_std = np.std(price_model, axis = 1)
+
+plt.plot(ford_AnData['date'], price_model, alpha = 0.3);
+
+plt.plot(ford_AnData['date'], ford_AnData['open'], c = 'k', label = 'NYSE data')
+plt.xlabel('date')
+plt.ylabel('opening price (\$)');
+
+skip = 100
+plt.errorbar(ford_AnData['date'][::skip], price_model_avg[::skip],
+             yerr = price_model_std[::skip], 
+             fmt = 'o',
+             c = 'r', 
+             label = 'model result', 
+            zorder = 3);
+plt.legend();
+```
+
+### The analysis above predicts that the stock of the Ford Motor Company on average loses value. This prediction can be extended with more recent data.
+
+Below is some experimentation with the returns of the stock.
+
+```{code-cell} ipython3
+returns = ford_AnData['close']-ford_AnData['open']
+```
+
+```{code-cell} ipython3
+print('The average daily returns for Ford stock were {:.2f} since July 2013'.format(np.mean(returns)))
+plt.plot(ford_AnData['date'], returns);
+```
+
+```{code-cell} ipython3
+dreturns = np.diff(returns)
+plt.plot(ford_AnData['date'][1:], dreturns)
+returns_std = np.std(returns)
+returns_mean = np.mean(returns)
+
+x_ret = np.linspace(-2,2)
+returns_pdf = stats.norm.pdf(x_ret, loc = returns_mean, scale = returns_std)
+```
+
+```{code-cell} ipython3
+plt.hist(dreturns, 50, density=True, label = 'NYSE data')
+
+plt.plot(x_ret, returns_pdf, 'r-')
+```
+
+```{code-cell} ipython3
 
 ```
