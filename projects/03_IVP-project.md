@@ -123,11 +123,14 @@ def simplerocket(state,dmdt=0.05, u=250):
 ```
 
 ```{code-cell} ipython3
+from scipy.integrate import solve_ivp
 m0=0.25
 mf=0.05
 dm=0.05
 t = np.linspace(0,(m0-mf)/dm,500)
 dt=t[1]-t[0]
+
+sol = solve_ivp(lambda t, y: simplerocket(y), [0, (m0-mf)/dm],[0,0,.25],t_eval=np.linspace(0, (m0-mf)/dm))
 ```
 
 __2.__ You should have a converged solution for integrating `simplerocket`. Now, create a more relastic function, `rocket` that incorporates gravity and drag and returns the velocity, $v$, the acceleration, $a$, and the mass rate change $\frac{dm}{dt}$, as a function of the $state = [position,~velocity,~mass] = [y,~v,~m]$ using eqn (1). Where the mass rate change $\frac{dm}{dt}$ and the propellent speed $u$ are constants. The average velocity of gun powder propellent used in firework rockets is $u=250$ m/s [3,4]. 
