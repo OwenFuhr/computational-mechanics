@@ -117,7 +117,8 @@ def simplerocket(state,dmdt=0.05, u=250):
     g = -9.81 #gravitational acceleration
     dstate = np.zeros(np.shape(state))
     dstate[0] = state[1]
-    dstate[1] = u*dmdt/
+    dstate[1] = u*dmdt/state[2]
+    dstate[2] = -dmdt
     return dstate
 ```
 
