@@ -123,6 +123,7 @@ def simplerocket(state,dmdt=0.05, u=250):
 ```
 
 ```{code-cell} ipython3
+#Using SciPy solve_ivp to integrate the function
 from scipy.integrate import solve_ivp
 m0=0.25
 mf=0.05
@@ -131,6 +132,19 @@ t = np.linspace(0,(m0-mf)/dm,500)
 dt=t[1]-t[0]
 
 sol = solve_ivp(lambda t, y: simplerocket(y), [0, (m0-mf)/dm],[0,0,.25],t_eval=np.linspace(0, (m0-mf)/dm))
+# sol should take the form [y, v, m]
+rocket_y = sol['y'][0]
+rocket_v = sol['y'][1]
+rocket_m = sol['y'][2]
+rocket_t = sol['t']
+
+#Get v/u
+Tsiol_vdivu = lambda m: -np.log(m/m0)
+
+
+plt.plot(rocket_t,rocket_v/250, 'r-', label='RK42 Numerical Integration $\\frac{v}{u}')
+plt.plot(rocket_t,Tsiol_vdivu(rocket_m), 'b--', label='Tsiolkovsky $\\frac{v}{u}$')
+plt.legend();
 ```
 
 __2.__ You should have a converged solution for integrating `simplerocket`. Now, create a more relastic function, `rocket` that incorporates gravity and drag and returns the velocity, $v$, the acceleration, $a$, and the mass rate change $\frac{dm}{dt}$, as a function of the $state = [position,~velocity,~mass] = [y,~v,~m]$ using eqn (1). Where the mass rate change $\frac{dm}{dt}$ and the propellent speed $u$ are constants. The average velocity of gun powder propellent used in firework rockets is $u=250$ m/s [3,4]. 
