@@ -114,7 +114,6 @@ def simplerocket(state,dmdt=0.05, u=250):
     dstate: array of three derivatives [v (u/m*dmdt-g-c/mv^2) -dmdt]^T
     '''
     m = 0.05 # mass in kg
-    g = -9.81 #gravitational acceleration
     dstate = np.zeros(np.shape(state))
     dstate[0] = state[1]
     dstate[1] = u*dmdt/state[2]
@@ -133,24 +132,30 @@ dt=t[1]-t[0]
 
 sol = solve_ivp(lambda t, y: simplerocket(y), [0, (m0-mf)/dm],[0,0,.25],t_eval=np.linspace(0, (m0-mf)/dm))
 # sol should take the form [y, v, m]
-rocket_y = sol['y'][0]
-rocket_v = sol['y'][1]
-rocket_m = sol['y'][2]
-rocket_t = sol['t']
+simprocket_y = sol['y'][0]
+simprocket_v = sol['y'][1]
+simprocket_m = sol['y'][2]
+simprocket_t = sol['t']
 
 #Get v/u
 Tsiol_vdivu = lambda m: -np.log(m/m0)
 
+#Plotting Tsiolkovsky and Numerical solns.
 plt.figure(figsize=(8,5))
-plt.plot(rocket_t,rocket_v/250, 'r-', label='RK42 Numerical Integration $\\frac{v}{u}')
-plt.plot(rocket_t,Tsiol_vdivu(rocket_m), 'b--', label='Tsiolkovsky')
+plt.plot(simprocket_t,simprocket_v/250, 'r-', label='RK42 Numerical Integration')
+plt.plot(simprocket_t,Tsiol_vdivu(simprocket_m), 'b--', label='Tsiolkovsky')
 plt.xlabel('Time (s)')
 plt.ylabel('$\\frac{v}{u}$')
 plt.title('Rocket $\\frac{v}{u}$ vs. Time')
 plt.legend();
-print('The sum of the error between the Tsiolkovsky and Integrated solution is {:.4f}'
-      .format(np.sum(abs(rocket_v/250-Tsiol_vdivu(rocket_m)))))
+print('The sum of the total error between the Tsiolkovsky and Integrated solution is {:.4f}'
+      .format(np.sum(abs(simprocket_v/250-Tsiol_vdivu(simprocket_m)))))
 ```
+
+### Analysis
+The sum of all the error between the integrated and analytical Tsilokovsky solution is very small, and it can be said that the integration method has converged.
+
++++
 
 __2.__ You should have a converged solution for integrating `simplerocket`. Now, create a more relastic function, `rocket` that incorporates gravity and drag and returns the velocity, $v$, the acceleration, $a$, and the mass rate change $\frac{dm}{dt}$, as a function of the $state = [position,~velocity,~mass] = [y,~v,~m]$ using eqn (1). Where the mass rate change $\frac{dm}{dt}$ and the propellent speed $u$ are constants. The average velocity of gun powder propellent used in firework rockets is $u=250$ m/s [3,4]. 
 
@@ -178,12 +183,47 @@ def rocket(state,dmdt=0.05, u=250,c=0.18e-3):
     c : drag constant for a rocket set to 0.18e-3 kg/m
     Returns
     -------
-    derivs: array of three derivatives [v (u/m*dmdt-g-c/mv^2) -dmdt]^T
+    dstate: array of three derivatives [v (u/m*dmdt-g-c/mv^2) -dmdt]^T
     '''
     g=9.81
     dstate = np.zeros(np.shape(state))
-    # your work
+    dstate[0] = state[1]
+    dstate[1] = u*dmdt/state[2]-g-c*state[1]**2/state[2]
+    dstate[2] = -dmdt
     return dstate
+```
+
+```{code-cell} ipython3
+#Going to integrate using solve_ivp again, first with RK45 (explicit) then with Radau (implicit)
+
+from scipy.integrate import solve_ivp
+
+#Runge-Kutta 4 5 (default)
+rksol = solve_ivp(lambda t, y: rocket(y), [0, (m0-mf)/dm],[0,0,.25],t_eval=np.linspace(0, (m0-mf)/dm),method='RK45')
+# sol should take the form [y, v, m]
+rkrocket_y = sol['y'][0]
+rkrocket_v = sol['y'][1]
+rkrocket_m = sol['y'][2]
+rkrocket_t = sol['t']
+
+#Radau
+radsol = solve_ivp(lambda t, y: rocket(y), [0, (m0-mf)/dm],[0,0,.25],t_eval=np.linspace(0, (m0-mf)/dm),method='Radau')
+# sol should take the form [y, v, m]
+radrocket_y = sol['y'][0]
+radrocket_v = sol['y'][1]
+radrocket_m = sol['y'][2]
+radrocket_t = sol['t']
+
+#Plotting velocities between methods
+plt.figure(figsize=(8,5))
+plt.plot(rkrocket_t,rkrocket_v, 'ro-', label='RK42 Explicit Numerical Integration')
+plt.plot(radrocket_t,radrocket_v, 'b--', label='Radau Implicit Numerical Integration')
+plt.title('Rocket Velocity vs. Time - RK42 and Radau Integration')
+plt.xlabel('Time (s)')
+plt.ylabel('Rocket Velocity $\\frac{m}{s}$')
+plt.legend();
+print('The sum of the total error between the integration methods is {}'
+      .format(np.sum(abs(radrocket_v-rkrocket_v))))
 ```
 
 __3.__ Solve for the mass change rate that results in detonation at a height of 300 meters. Create a function `f_dm` that returns the final height of the firework when it reaches $m_{f}=0.05~kg$. The inputs should be 
