@@ -141,10 +141,15 @@ rocket_t = sol['t']
 #Get v/u
 Tsiol_vdivu = lambda m: -np.log(m/m0)
 
-
+plt.figure(figsize=(8,5))
 plt.plot(rocket_t,rocket_v/250, 'r-', label='RK42 Numerical Integration $\\frac{v}{u}')
-plt.plot(rocket_t,Tsiol_vdivu(rocket_m), 'b--', label='Tsiolkovsky $\\frac{v}{u}$')
+plt.plot(rocket_t,Tsiol_vdivu(rocket_m), 'b--', label='Tsiolkovsky')
+plt.xlabel('Time (s)')
+plt.ylabel('$\\frac{v}{u}$')
+plt.title('Rocket $\\frac{v}{u}$ vs. Time')
 plt.legend();
+print('The sum of the error between the Tsiolkovsky and Integrated solution is {:.4f}'
+      .format(np.sum(abs(rocket_v/250-Tsiol_vdivu(rocket_m)))))
 ```
 
 __2.__ You should have a converged solution for integrating `simplerocket`. Now, create a more relastic function, `rocket` that incorporates gravity and drag and returns the velocity, $v$, the acceleration, $a$, and the mass rate change $\frac{dm}{dt}$, as a function of the $state = [position,~velocity,~mass] = [y,~v,~m]$ using eqn (1). Where the mass rate change $\frac{dm}{dt}$ and the propellent speed $u$ are constants. The average velocity of gun powder propellent used in firework rockets is $u=250$ m/s [3,4]. 
