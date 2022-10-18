@@ -142,7 +142,7 @@ Tsiol_vdivu = lambda m: -np.log(m/m0)
 
 #Plotting Tsiolkovsky and Numerical solns.
 plt.figure(figsize=(8,5))
-plt.plot(simprocket_t,simprocket_v/250, 'r-', label='RK42 Numerical Integration')
+plt.plot(simprocket_t,simprocket_v/250, 'g-', label='RK42 Numerical Integration')
 plt.plot(simprocket_t,Tsiol_vdivu(simprocket_m), 'b--', label='Tsiolkovsky')
 plt.xlabel('Time (s)')
 plt.ylabel('$\\frac{v}{u}$')
@@ -201,29 +201,44 @@ from scipy.integrate import solve_ivp
 #Runge-Kutta 4 5 (default)
 rksol = solve_ivp(lambda t, y: rocket(y), [0, (m0-mf)/dm],[0,0,.25],t_eval=np.linspace(0, (m0-mf)/dm),method='RK45')
 # sol should take the form [y, v, m]
-rkrocket_y = sol['y'][0]
-rkrocket_v = sol['y'][1]
-rkrocket_m = sol['y'][2]
-rkrocket_t = sol['t']
+rkrocket_y = rksol['y'][0]
+rkrocket_v = rksol['y'][1]
+rkrocket_m = rksol['y'][2]
+rkrocket_t = rksol['t']
 
 #Radau
 radsol = solve_ivp(lambda t, y: rocket(y), [0, (m0-mf)/dm],[0,0,.25],t_eval=np.linspace(0, (m0-mf)/dm),method='Radau')
 # sol should take the form [y, v, m]
-radrocket_y = sol['y'][0]
-radrocket_v = sol['y'][1]
-radrocket_m = sol['y'][2]
-radrocket_t = sol['t']
+radrocket_y = radsol['y'][0]
+radrocket_v = radsol['y'][1]
+radrocket_m = radsol['y'][2]
+radrocket_t = radsol['t']
 
 #Plotting velocities between methods
 plt.figure(figsize=(8,5))
-plt.plot(rkrocket_t,rkrocket_v, 'ro-', label='RK42 Explicit Numerical Integration')
+plt.plot(rkrocket_t,rkrocket_v, 'go-', label='RK42 Explicit Numerical Integration')
 plt.plot(radrocket_t,radrocket_v, 'b--', label='Radau Implicit Numerical Integration')
+plt.plot(radrocket_t,Tsiol_v(simprocket_m), 'b-', label='Tsiolkovsky')
 plt.title('Rocket Velocity vs. Time - RK42 and Radau Integration')
 plt.xlabel('Time (s)')
 plt.ylabel('Rocket Velocity $\\frac{m}{s}$')
 plt.legend();
-print('The sum of the total error between the integration methods is {}'
-      .format(np.sum(abs(radrocket_v-rkrocket_v))))
+print('The sum of the squared error between the integration methods is {:.4f}'
+      .format(np.sum(abs(radrocket_v-rkrocket_v)**2)))
+print('''Since the RK42 and Radau methods are completely converged, it can be said that they both converge to the
+Tsiolkovsky Equation with an SSE of {:.4f}'''.format(np.sum(abs(radrocket_v/250-Tsiol_vdivu(radrocket_m))**2)))
+```
+
+```{code-cell} ipython3
+#Comparing with original function
+plt.figure(figsize = (8,5))
+plt.plot(simprocket_t,simprocket_y, 'r--', label='SimpleRocket')
+plt.plot(rkrocket_t,rkrocket_y, 'bo', label='Rocket')
+plt.title('SimpleRocket, Rocket Calculated Heights vs. Time')
+plt.xlabel('Time (s)')
+plt.ylabel('Height (m)')
+print('''The final height reached by the rocket is {:.4f} meters according to the simplerocket function
+According to rocket function, the final height is {:.4f}'''.format(simprocket_y[-1], radrocket_y[-1]))
 ```
 
 __3.__ Solve for the mass change rate that results in detonation at a height of 300 meters. Create a function `f_dm` that returns the final height of the firework when it reaches $m_{f}=0.05~kg$. The inputs should be 
@@ -264,8 +279,9 @@ def f_dm(dmdt, m0 = 0.25, c = 0.18e-3, u = 250):
     error: the difference between height_desired and height_predicted[-1]
         when f_dm(dmdt) = 0, the correct mass change rate was chosen
     '''
-    # your work
-    return error
+    mf = 0.05 #Mass in kg
+    
+    return finheight
 ```
 
 ```{code-cell} ipython3
