@@ -148,12 +148,12 @@ plt.xlabel('Time (s)')
 plt.ylabel('$\\frac{v}{u}$')
 plt.title('Rocket $\\frac{v}{u}$ vs. Time')
 plt.legend();
-print('The sum of the total error between the Tsiolkovsky and Integrated solution is {:.4f}'
-      .format(np.sum(abs(simprocket_v/250-Tsiol_vdivu(simprocket_m)))))
+print('The sum of the squared error (SSE) between the Tsiolkovsky and Integrated solution is {:.4f}'
+      .format(np.sum(abs(simprocket_v/250-Tsiol_vdivu(simprocket_m))**2)))
 ```
 
 ### Analysis
-The sum of all the error between the integrated and analytical Tsilokovsky solution is very small, and it can be said that the integration method has converged.
+The SSE between the integrated and analytical Tsiolkovsky solution is very small, and it can be said that the integration method has converged to the Tsiolkovsky solution.
 
 +++
 
@@ -216,17 +216,17 @@ radrocket_t = radsol['t']
 
 #Plotting velocities between methods
 plt.figure(figsize=(8,5))
-plt.plot(rkrocket_t,rkrocket_v, 'go-', label='RK42 Explicit Numerical Integration')
-plt.plot(radrocket_t,radrocket_v, 'b--', label='Radau Implicit Numerical Integration')
-plt.plot(radrocket_t,Tsiol_v(simprocket_m), 'b-', label='Tsiolkovsky')
-plt.title('Rocket Velocity vs. Time - RK42 and Radau Integration')
+plt.plot(rkrocket_t,rkrocket_v/250, 'go-', label='RK42 Explicit Numerical Integration')
+plt.plot(radrocket_t,radrocket_v/250, 'b--', label='Radau Implicit Numerical Integration')
+plt.plot(radrocket_t,Tsiol_vdivu(simprocket_m), 'b-', label='Tsiolkovsky')
+plt.title('Rocket $\\frac{v}{u}$ vs. Time - RK42 and Radau Integration')
 plt.xlabel('Time (s)')
-plt.ylabel('Rocket Velocity $\\frac{m}{s}$')
+plt.ylabel('$\\frac{v}{u}$')
 plt.legend();
 print('The sum of the squared error between the integration methods is {:.4f}'
       .format(np.sum(abs(radrocket_v-rkrocket_v)**2)))
-print('''Since the RK42 and Radau methods are completely converged, it can be said that they both converge to the
-Tsiolkovsky Equation with an SSE of {:.4f}'''.format(np.sum(abs(radrocket_v/250-Tsiol_vdivu(radrocket_m))**2)))
+print('''The RK42 and Radau methods are converged, but they do not converge to the Tsiolkovsky equation,
+there is a SSE of {:.4f} between the curves.'''.format(np.sum(abs(radrocket_v/250-Tsiol_vdivu(radrocket_m))**2)))
 ```
 
 ```{code-cell} ipython3
@@ -237,8 +237,12 @@ plt.plot(rkrocket_t,rkrocket_y, 'bo', label='Rocket')
 plt.title('SimpleRocket, Rocket Calculated Heights vs. Time')
 plt.xlabel('Time (s)')
 plt.ylabel('Height (m)')
-print('''The final height reached by the rocket is {:.4f} meters according to the simplerocket function
-According to rocket function, the final height is {:.4f}'''.format(simprocket_y[-1], radrocket_y[-1]))
+plt.legend();
+print('''The final height reached by the rocket is {:.4f} meters according to the simplerocket (no drag) function
+According to rocket (drag) function, the final height is {:.4f} (difference of {:.2f} m)'''
+      .format(simprocket_y[-1], radrocket_y[-1],simprocket_y[-1]-radrocket_y[-1]))
+
+print('\nThe SSE between these curves is {:.1f} m^2'.format(np.sum(abs(simprocket_y-radrocket_y)**2)))
 ```
 
 __3.__ Solve for the mass change rate that results in detonation at a height of 300 meters. Create a function `f_dm` that returns the final height of the firework when it reaches $m_{f}=0.05~kg$. The inputs should be 
@@ -255,7 +259,7 @@ sub-intervals _limit the number of times you call the
 function_. Then, use the modified secant method to find the true root of
 the function.
 
-a. Use the incremental search to find the two closest mass change rates within the interval $\frac{dm}{dt}=0.05-0.4~kg/s.$
+a. Use the incremental search to find the two closest mass change rates within the interval $\frac{dm}{dt}=0.05-0.04~kg/s.$
 
 b. Use the modified secant method to find the root of the function $f_{m}$.
 
@@ -280,7 +284,7 @@ def f_dm(dmdt, m0 = 0.25, c = 0.18e-3, u = 250):
         when f_dm(dmdt) = 0, the correct mass change rate was chosen
     '''
     mf = 0.05 #Mass in kg
-    
+    rocket(state,dmdt=0.05, u=250,c=0.18e-3)
     return finheight
 ```
 
@@ -317,6 +321,39 @@ def mod_secant(func,dx,x0,es=0.0001,maxit=50):
         if ea <= es:
             break
     return xr,[func(xr),ea,iter]
+```
+
+```{code-cell} ipython3
+def incsearch(func,xmin,xmax,ns=50):
+    '''incsearch: incremental search root locator
+    xb = incsearch(func,xmin,xmax,ns):
+      finds brackets of x that contain sign changes
+      of a function on an interval
+    arguments:
+    ---------
+    func = name of function
+    xmin, xmax = endpoints of interval
+    ns = number of subintervals (default = 50)
+    returns:
+    ---------
+    xb(k,1) is the lower bound of the kth sign change
+    xb(k,2) is the upper bound of the kth sign change
+    If no brackets found, xb = [].'''
+    x = np.linspace(xmin,xmax,ns)
+    f = func(x)
+    sign_f = np.sign(f)
+    delta_sign_f = sign_f[1:]-sign_f[0:-1]
+    i_zeros = np.nonzero(delta_sign_f!=0)
+    nb = len(i_zeros[0])
+    xb = np.block([[ x[i_zeros[0]+1]],[x[i_zeros[0]] ]] )
+
+    
+    if nb==0:
+      print('no brackets found\n')
+      print('check interval or increase ns\n')
+    else:
+      print('number of brackets:  {}\n'.format(nb))
+    return xb
 ```
 
 ## References
