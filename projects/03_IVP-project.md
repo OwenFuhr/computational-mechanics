@@ -267,6 +267,27 @@ b. Use the modified secant method to find the root of the function $f_{m}$.
 c. Plot your solution for the height as a function of time and indicate the detonation with a `*`-marker.
 
 ```{code-cell} ipython3
+def dmrocket(state,dmdt,u=250,c=0.18e-3):
+    '''Computes the right-hand side of the differential equation
+    for the acceleration of a rocket, with drag, in SI units.
+    
+    Arguments
+    ----------    
+    state : array of three dependent variables [y v m]^T
+    dmdt : mass rate change of rocket in kilograms/s default set to 0.05 kg/s
+    u    : speed of propellent expelled (default is 250 m/s)
+    c : drag constant for a rocket set to 0.18e-3 kg/m
+    Returns
+    -------
+    dstate: array of three derivatives [v (u/m*dmdt-g-c/mv^2) -dmdt]^T
+    '''
+    g=9.81
+    dstate = np.zeros(np.shape(state))
+    dstate[0] = state[1]
+    dstate[1] = u*dmdt/state[2]-g-c*state[1]**2/state[2]
+    dstate[2] = -dmdt
+    return dstate
+
 def f_dm(dmdt, m0 = 0.25, c = 0.18e-3, u = 250):
     ''' define a function f_dm(dmdt) that returns 
     height_desired-height_predicted[-1]
@@ -286,7 +307,12 @@ def f_dm(dmdt, m0 = 0.25, c = 0.18e-3, u = 250):
     '''
     mf = 0.05 #Mass in kg
     height_desired = 300 #height desired in m
-    rocket(state,dmdt=0.05, u=250,c=0.18e-3)
+    t=np.linspace(0, (m0-mf)/dmdt,20)
+    #Using the Radau integration method
+    radsol = solve_ivp(lambda t, y: dmrocket(y,dmdt), [0, t[-1]],[0,0,.25],t_eval=t,method='RK45')
+    height_predicted = radsol.y[0,-1]
+    
+    error = height_predicted-height_desired
     return error
 ```
 
@@ -342,7 +368,7 @@ def incsearch(func,xmin,xmax,ns=50):
     xb(k,2) is the upper bound of the kth sign change
     If no brackets found, xb = [].'''
     x = np.linspace(xmin,xmax,ns)
-    f = func(x)
+    f = [func(xi) for xi in x]
     sign_f = np.sign(f)
     delta_sign_f = sign_f[1:]-sign_f[0:-1]
     i_zeros = np.nonzero(delta_sign_f!=0)
@@ -361,7 +387,8 @@ def incsearch(func,xmin,xmax,ns=50):
 ```{code-cell} ipython3
 dmdtup = 0.05
 dmdtdwn = 0.04
-incsearch(f_dm, dmdtdwn,dmdtup)
+root = incsearch(f_dm, dmdtdwn,dmdtup)
+print(root)
 ```
 
 ## References
@@ -373,3 +400,7 @@ incsearch(f_dm, dmdtdwn,dmdtup)
 3. <https://en.wikipedia.org/wiki/Specific_impulse>
 
 4. <https://www.apogeerockets.com/Rocket_Motors/Estes_Motors/13mm_Motors/Estes_13mm_1_4A3-3T>
+
+```{code-cell} ipython3
+
+```
