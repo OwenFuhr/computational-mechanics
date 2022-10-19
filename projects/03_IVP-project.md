@@ -225,8 +225,9 @@ plt.ylabel('$\\frac{v}{u}$')
 plt.legend();
 print('The sum of the squared error between the integration methods is {:.4f}'
       .format(np.sum(abs(radrocket_v-rkrocket_v)**2)))
-print('''The RK42 and Radau methods are converged, but they do not converge to the Tsiolkovsky equation,
-there is a SSE of {:.4f} between the curves.'''.format(np.sum(abs(radrocket_v/250-Tsiol_vdivu(radrocket_m))**2)))
+print('''The RK42 and Radau methods are converged, but they do not converge to the Tsiolkovsky equation
+past the initial few steps - there is a SSE of {:.4f} between the curves.
+If dm/dt was larger, the solutions would come closer to convergence'''.format(np.sum(abs(radrocket_v/250-Tsiol_vdivu(radrocket_m))**2)))
 ```
 
 ```{code-cell} ipython3
@@ -284,8 +285,9 @@ def f_dm(dmdt, m0 = 0.25, c = 0.18e-3, u = 250):
         when f_dm(dmdt) = 0, the correct mass change rate was chosen
     '''
     mf = 0.05 #Mass in kg
+    height_desired = 300 #height desired in m
     rocket(state,dmdt=0.05, u=250,c=0.18e-3)
-    return finheight
+    return error
 ```
 
 ```{code-cell} ipython3
@@ -354,6 +356,12 @@ def incsearch(func,xmin,xmax,ns=50):
     else:
       print('number of brackets:  {}\n'.format(nb))
     return xb
+```
+
+```{code-cell} ipython3
+dmdtup = 0.05
+dmdtdwn = 0.04
+incsearch(f_dm, dmdtdwn,dmdtup)
 ```
 
 ## References
