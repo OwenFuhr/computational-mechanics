@@ -260,7 +260,7 @@ sub-intervals _limit the number of times you call the
 function_. Then, use the modified secant method to find the true root of
 the function.
 
-a. Use the incremental search to find the two closest mass change rates within the interval $\frac{dm}{dt}=0.05-0.04~kg/s.$
+a. Use the incremental search to find the two closest mass change rates within the interval $\frac{dm}{dt}=0.05-0.4~kg/s.$
 
 b. Use the modified secant method to find the root of the function $f_{m}$.
 
@@ -270,7 +270,7 @@ c. Plot your solution for the height as a function of time and indicate the deto
 def dmrocket(state,dmdt,u=250,c=0.18e-3):
     '''Computes the right-hand side of the differential equation
     for the acceleration of a rocket, with drag, in SI units.
-    
+    **Edit from original function: includes dmdt as argument**
     Arguments
     ----------    
     state : array of three dependent variables [y v m]^T
@@ -373,7 +373,7 @@ def incsearch(func,xmin,xmax,ns=50):
     delta_sign_f = sign_f[1:]-sign_f[0:-1]
     i_zeros = np.nonzero(delta_sign_f!=0)
     nb = len(i_zeros[0])
-    xb = np.block([[ x[i_zeros[0]+1]],[x[i_zeros[0]] ]] )
+    xb = np.block([[ x[i_zeros[0]+1]],[x[i_zeros[0]]]] )
 
     
     if nb==0:
@@ -385,10 +385,26 @@ def incsearch(func,xmin,xmax,ns=50):
 ```
 
 ```{code-cell} ipython3
-dmdtup = 0.05
-dmdtdwn = 0.04
+dmdtup = 0.4
+dmdtdwn = 0.05
 root = incsearch(f_dm, dmdtdwn,dmdtup)
-print(root)
+#get the average value of the root bounds and solve the dmrocket diff. equation
+avgroot = np.mean(root)
+
+#Set up solver with the dmdt root
+t=np.linspace(0, (m0-mf)/avgroot,20)
+rootradsol = solve_ivp(lambda t, y: dmrocket(y,avgroot), [0, t[-1]],[0,0,.25],t_eval=t,method='RK45')
+raddmrocket_y = rootradsol['y'][0]
+raddmrocket_t = rootradsol['t']
+
+#Plot Trajectory
+plt.figure(figsize=(8,5))
+plt.plot(raddmrocket_t, raddmrocket_y, 'r--', label='Firework Trajectory')
+plt.plot(raddmrocket_t[-1],raddmrocket_y[-1], 'g*', markersize=20,label='Detonation Point at {:.2f} m'.format(raddmrocket_y[-1]))
+plt.title('Firework Trajectory vs. Time with Detonation')
+plt.xlabel('Time (s)')
+plt.ylabel('Firework Height (m)')
+plt.legend();
 ```
 
 ## References
