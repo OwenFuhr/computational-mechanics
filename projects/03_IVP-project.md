@@ -384,27 +384,59 @@ def incsearch(func,xmin,xmax,ns=50):
     return xb
 ```
 
+### incsearch()
+
 ```{code-cell} ipython3
 dmdtup = 0.4
 dmdtdwn = 0.05
+#Use the incsearch function to get the root of the f_dm function.
 root = incsearch(f_dm, dmdtdwn,dmdtup)
-#get the average value of the root bounds and solve the dmrocket diff. equation
+#get the average value of the root bounds (dm/dt) and solve the dmrocket diff. equation
 avgroot = np.mean(root)
-
-#Set up solver with the dmdt root
+print("The average root is {:0.4f}".format(avgroot))
+#Set up solver with the dmdt root (Radau)
 t=np.linspace(0, (m0-mf)/avgroot,20)
-rootradsol = solve_ivp(lambda t, y: dmrocket(y,avgroot), [0, t[-1]],[0,0,.25],t_eval=t,method='RK45')
+rootradsol = solve_ivp(lambda t, y: dmrocket(y,avgroot), [0, t[-1]],[0,0,.25],t_eval=t,method='Radau')
 raddmrocket_y = rootradsol['y'][0]
 raddmrocket_t = rootradsol['t']
 
 #Plot Trajectory
 plt.figure(figsize=(8,5))
-plt.plot(raddmrocket_t, raddmrocket_y, 'r--', label='Firework Trajectory')
+plt.plot(raddmrocket_t, raddmrocket_y, 'r--', label='Firework')
 plt.plot(raddmrocket_t[-1],raddmrocket_y[-1], 'g*', markersize=20,label='Detonation Point at {:.2f} m'.format(raddmrocket_y[-1]))
-plt.title('Firework Trajectory vs. Time with Detonation')
+plt.title('Firework Height vs. Time with Detonation')
 plt.xlabel('Time (s)')
 plt.ylabel('Firework Height (m)')
 plt.legend();
+print('\nUsing the value of dm/dt found using the incsearch function (root of f_dm(Radau)) we get an error of {:.4f} meters.'
+     .format(300-raddmrocket_y[-1]))
+```
+
+### modsecant()
+
+```{code-cell} ipython3
+#Finding the root using the modsecant function, initial guess is avg root from incsearch
+msroot, iterations = mod_secant(f_dm,0.0001,avgroot,es=0.0001)
+#Getting the average
+
+print('The root is {:.4f}'.format(msroot))
+#Set up solver with the dmdt root (Radau)
+tms=np.linspace(0, (m0-mf)/msroot,20)
+rootradsolms = solve_ivp(lambda tms, y: dmrocket(y,msroot), [0, tms[-1]],[0,0,.25],t_eval=tms,method='Radau')
+msraddmrocket_y = rootradsolms['y'][0]
+msraddmrocket_t = rootradsolms['t']
+
+#Plot Trajectory
+plt.figure(figsize=(8,5))
+plt.plot(msraddmrocket_t, msraddmrocket_y, 'r--', label='Firework')
+plt.plot(msraddmrocket_t[-1],msraddmrocket_y[-1], 'g*', markersize=20,label='Detonation Point at {:.2f} m'
+         .format(msraddmrocket_y[-1]))
+plt.title('Firework Height vs. Time with Detonation')
+plt.xlabel('Time (s)')
+plt.ylabel('Firework Height (m)')
+plt.legend();
+print('''\nUsing the value of dm/dt found using the modsecant function (root of f_dm(Radau)) with an initial guess
+of the incsearch average root, we get an error of {:.4f} meters.'''.format(abs(300-msraddmrocket_y[-1])))
 ```
 
 ## References
