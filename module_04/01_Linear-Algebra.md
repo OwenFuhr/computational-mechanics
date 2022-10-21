@@ -5,9 +5,9 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.10.3
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -53,8 +53,8 @@ import numpy as np
 ```
 
 ```{code-cell} ipython3
-A=np.array([[-7,3,0],[7,-19,12],[0,4,-12]])
-b=np.array([-20,0,-8])
+A=np.array([[5,3,0],[1,2,3],[1,1,1]])
+b=np.array([1,2,3])
 
 x = np.linalg.solve(A,b)
 for i in range(0,3):
@@ -121,7 +121,7 @@ Now, let's use some numpy linear algebra to solve for $c_2$. First, define $\mat
 
 ```{code-cell} ipython3
 A=np.array([[-7,3,0],[7,-19,12],[0,4,-12]])
-b=np.array([-5,0,-8])
+b=np.array([-20,0,-8])
 print('matrix A:\t vector b:')
 for i in range(0,3):
     print(A[i],'\t',b[i])
@@ -148,7 +148,8 @@ print('c1 = {:.2f} mg/m^3,\nc2 = {:.2f} mg/m^3,\nc3 = {:.2f} mg/mm^3'.format(*x)
 Show that $\mathbf{Ax} = \mathbf{b}$ in the previous mixing container example. Plug the values of `x` into the three equations and show that mass is conserved.
 
 ```{code-cell} ipython3
-
+for i,row in enumerate(A):
+    print('{} [{:.2f}] = [{}]'.format(row,x[i],b[i]))
 ```
 
 ## Vectors 
@@ -354,7 +355,9 @@ print('a={:.2f} m/s/s\nT1={:.1f} N\nT2={:.1f} N\nT3={:.1f} N'.format(*x2))
 2. Create a new vector `y3` where the coefficient of friction is $\mu=0.5$ what is the new acceleration? Do the tensions increase or decrease when tension increases?
 
 ```{code-cell} ipython3
-
+for row in A2:
+    print(np.sum(row*x2))
+print(np.vstack(A2@x2))
 ```
 
 ## Pause and ponder
@@ -562,4 +565,4 @@ print(u[-3:,-3:])
 
 2. Kiusalaas, Jaan _Numerical Methods in Engineering with Python 3._ __ch 2.__ Cambridge University Press. 
 
-3. [_"Essence of Linear Algebra"_](http://3b1b.co/eola) 3 Blue 1 Brown Linear algebra series. 
+3. [_"Essence of Linear Algebra"_](http://3b1b.co/eola) 3 Blue 1 Brown Linear algebra series.
