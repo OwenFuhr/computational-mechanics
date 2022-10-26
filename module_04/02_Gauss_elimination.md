@@ -368,7 +368,7 @@ x, Aug = GaussNaive(A,y)
 
 print('x=  \t\tAug=')
 for i in range(len(x)):
-    print('{:.2f}\t\t'.format(x[i]) , Ay[i])
+    print('{:.2f}\t\t'.format(x[i]) , Aug[i])
 ```
 
 ## Revisit Example with Mixing Tanks
@@ -438,15 +438,15 @@ x3,Aug3 = GaussNaive(A,b3)
 print('example 1')
 print('x=  \t\tAug=')
 for i in range(len(x)):
-    print('{:.2f}\t\t'.format(x[i]) , Ay[i])
+    print('{:.2f}\t\t'.format(x1[i]) , Aug1[i])
 print('\nexample 2')
 print('x=  \t\tAug=')
 for i in range(len(x)):
-    print('{:.2f}\t\t'.format(x[i]) , Ay[i])
+    print('{:.2f}\t\t'.format(x2[i]) , Aug2[i])
 print('\nexample 3')
 print('x=  \t\tAug=')
 for i in range(len(x)):
-    print('{:.2f}\t\t'.format(x[i]) , Ay[i])
+    print('{:.2f}\t\t'.format(x3[i]) , Aug3[i])
 ```
 
 ## Solving the same problem with different inputs  
