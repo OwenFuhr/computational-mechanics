@@ -502,7 +502,7 @@ Use the `@`-symbol to confirm LU = A.
 `L@U`
 
 ```{code-cell} ipython3
-
+L@U
 ```
 
 Now, you can rewrite our problem $\mathbf{Ax} = \mathbf{b}$ as $\mathbf{LUx} = \mathbf{b}$. This may not see helpful at first, but take a look at the new system of equations that you can solve

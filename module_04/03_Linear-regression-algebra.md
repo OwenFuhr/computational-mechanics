@@ -5,9 +5,9 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.10.3
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -186,6 +186,7 @@ a
 
 ```{code-cell} ipython3
 x_fcn=np.linspace(min(x),max(x));
+a = np.linalg.solve(Z.T@Z,Z.T@y)
 plt.plot(x,y,'o',label='data')
 plt.plot(x,Z@a,label='quadratic fit')
 plt.xlabel('x')
@@ -338,7 +339,7 @@ plt.ylabel('voltage (V)');
 
 ```{code-cell} ipython3
 Z = np.block([[np.sin(t)],[np.sin(3*t)]]).T
-model = sm.OLS(y, Z)
+model = sm.OLS(V, Z)
 results = model.fit()
 amps = results.params
 ```
