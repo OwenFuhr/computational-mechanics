@@ -5,9 +5,9 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.10.3
+    jupytext_version: 1.11.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -53,6 +53,7 @@ $  \left[ \begin{array}{cccccccccccccc}
 ```{code-cell} ipython3
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.linalg import lu
 plt.style.use('fivethirtyeight')
 ```
 
@@ -117,7 +118,46 @@ d. Create a plot of the undeformed and deformed structure with the displacements
 ![Deformed structure with loads applied](../images/deformed_truss.png)
 
 ```{code-cell} ipython3
- 
+#Create force array with F = -300N applied at node 4.
+F = np.zeros(7)
+F[3] = -300
+print(F)
+
+#Part a
+#Use Scipy to decompose the matrix into PLU components
+P, L, U = lu(K[2:13,2:13])
+
+#From Professor's work
+ix = 2*np.block([[np.arange(0,5)],[np.arange(1,6)],[np.arange(2,7)],[np.arange(0,5)]])
+iy = ix+1
+
+r = np.block([n[1:3] for n in nodes])
+r
+```
+
+```{code-cell} ipython3
+plt.plot(r[ix],r[iy],'-',color='k')
+plt.plot(r[ix],r[iy],'o',color='b')
+plt.plot(r[0],r[1],'^',color='r',markersize=20)
+plt.plot(r[0],r[1],'>',color='k',markersize=20)
+plt.plot(r[-2],r[-1],'^',color='r',markersize=20)
+# label the nodes
+for n in nodes:
+    if n[2]>0.8*l: offset=0.1
+    else: offset=-l/5
+    plt.text(n[1]-l/3,n[2]+offset,'n {}'.format(int(n[0])),color='b')
+# label the elements
+for e in elems:
+    n1=nodes[e[1]-1]
+    n2=nodes[e[2]-1]
+    x=np.mean([n2[1],n1[1]])
+    y=np.mean([n2[2],n1[2]])
+    # ----------------->need elem labels<-----------------
+    plt.text(x-l/5,y-l/10,'el {}'.format(int(e[0])),color='r')
+plt.title('Our truss structure\neach element is 2 nodes and length L\ntriangle markers are constraints')
+plt.xlabel('x (mm)')
+plt.ylabel('y (mm)')
+plt.axis(l*np.array([-0.5,3.5,-1,1.5]));
 ```
 
 ### 3. Determine cross-sectional area
