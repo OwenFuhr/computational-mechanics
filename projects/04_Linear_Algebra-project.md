@@ -119,15 +119,59 @@ d. Create a plot of the undeformed and deformed structure with the displacements
 
 ```{code-cell} ipython3
 #Create force array with F = -300N applied at node 4.
-F = np.zeros(7)
-F[3] = -300
-print(F)
+nodes = np.array([[1,0,0],[2,0.5,3**0.5/2],[3,1,0],[4,1.5,3**0.5/2],[5,2,0],[6,2.5,3**0.5/2],[7,3,0]])
+nodes[:,1:3]*=l
+F=np.zeros(2*len(nodes)-3)
+F[5]=-300
+
+#Modify K with BCs
+K_BC = K[2:13,2:13]
+#Element Properties
+#Area in mm^2
+A = 0.1
+#Steel (MPa)
+Est = 200e3
+#Aluminum (MPa)
+EAl = 70e3
 
 #Part a
 #Use Scipy to decompose the matrix into PLU components
-P, L, U = lu(K[2:13,2:13])
+P, L, U = lu(K_BC)
 
+#Set up lower triangular matrices for steel and aluminum
+L_EAst = L*Est*A
+L_EAal = L*EAl*A
+
+#Forward Substitution Solutions
+FW_StSol = np.linalg.solve(L_EAst,F)
+FW_AlSol = np.linalg.solve(L_EAal, F)
+
+u_StSol = np.linalg.solve(U,FW_StSol)
+u_AlSol = np.linalg.solve(U,FW_AlSol)
+
+ReactSt = K_BC@u_StSol
+ReactAl = K_BC@u_AlSol
+
+print('The reactions for a steel truss are:')
+for i, R in enumerate(ReactSt):
+    print('R_{} = {} N'.format((i+1), R))
+
+print('The reactions for an aluminum truss are:')
+for i, R in enumerate(ReactAl):
+    print('R_{} = {} N'.format((i+1), R))
+```
+
+```{code-cell} ipython3
 #From Professor's work
+l=300 # mm
+nodes = np.array([[1,0,0],[2,0.5,3**0.5/2],[3,1,0],[4,1.5,3**0.5/2],[5,2,0],[6,2.5,3**0.5/2],[7,3,0]])
+nodes[:,1:3]*=l
+elems = np.array([[1,1,2],[2,2,3],[3,1,3],[4,2,4],[5,3,4],[6,3,5],[7,4,5],[8,4,6],[9,5,6],[10,5,7],[11,6,7]])
+print('node array\n---------------')
+print(nodes)
+print('element array\n---------------')
+print(elems)
+
 ix = 2*np.block([[np.arange(0,5)],[np.arange(1,6)],[np.arange(2,7)],[np.arange(0,5)]])
 iy = ix+1
 
@@ -158,6 +202,21 @@ plt.title('Our truss structure\neach element is 2 nodes and length L\ntriangle m
 plt.xlabel('x (mm)')
 plt.ylabel('y (mm)')
 plt.axis(l*np.array([-0.5,3.5,-1,1.5]));
+```
+
+```{code-cell} ipython3
+#From professor's work
+def f(s):
+    plt.plot(r[ix],r[iy],'-',color=(0,0,0,1))
+    plt.plot(r[ix]+u[ix]*s,r[iy]+u[iy]*s,'-',color=(1,0,0,1))
+    #plt.quiver(r[ix],r[iy],u[ix],u[iy],color=(0,0,1,1),label='displacements')
+    plt.quiver(r[ix],r[iy],F[ix],F[iy],color=(1,0,0,1),label='applied forces')
+    plt.quiver(r[ix],r[iy],u[ix],u[iy],color=(0,0,1,1),label='displacements')
+    plt.axis(l*np.array([-0.5,3.5,-0.5,2]))
+    plt.xlabel('x (mm)')
+    plt.ylabel('y (mm)')
+    plt.title('Deformation scale = {:.1f}x'.format(s))
+    plt.legend(bbox_to_anchor=(1,0.5))
 ```
 
 ### 3. Determine cross-sectional area
