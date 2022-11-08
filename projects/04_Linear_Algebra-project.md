@@ -207,21 +207,23 @@ plt.axis(l*np.array([-0.5,3.5,-1,1.5]));
 ```
 
 ```{code-cell} ipython3
-#From professor's work
-def f(s):
+#Adapted from professor's work
+def f(s, u, matlname):
+    plt.figure(figsize=(8,5))
     plt.plot(r[ix],r[iy],'-',color=(0,0,0,1))
     plt.plot(r[ix]+u[ix]*s,r[iy]+u[iy]*s,'-',color=(1,0,0,1))
     #plt.quiver(r[ix],r[iy],u[ix],u[iy],color=(0,0,1,1),label='displacements')
-    plt.quiver(r[ix],r[iy],F[ix],F[iy],color=(1,0,0,1),label='applied forces')
+    plt.quiver(r[ix],r[iy],React[ix],React[iy],color=(1,0,0,1),label='applied forces')
     plt.quiver(r[ix],r[iy],u[ix],u[iy],color=(0,0,1,1),label='displacements')
     plt.axis(l*np.array([-0.5,3.5,-0.5,2]))
     plt.xlabel('x (mm)')
     plt.ylabel('y (mm)')
-    plt.title('Deformation scale = {:.1f}x'.format(s))
+    plt.title('Deformation of {} Truss Under {:.0f} N'.format(matlname, React[7]))
     plt.legend(bbox_to_anchor=(1,0.5))
     
-plt.figure(3,figsize=(8,5))
-f(5)
+
+f(1, uSt, 'Steel')
+f(1, uAl, 'Aluminum')
 ```
 
 ### 3. Determine cross-sectional area
