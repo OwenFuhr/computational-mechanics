@@ -239,7 +239,7 @@ chosen cross-sectional areas?
 #Solving part a and b iteratively
 
 #Set up range of areas
-Amax, step = 100, 0.001
+Amax, step = 100, 0.005
 Xsecs = np.arange(0.1,Amax,step)
 
 #Iterate until the total deformation of aluminum becomes less than 0.2mm
@@ -249,7 +249,8 @@ for i,A in enumerate(Xsecs):
     uAl_t = u_store/(EAl*A)
     totdef.append(abs(np.sum(uAl_t[1::2])))
     if abs(np.sum(uAl_t[1::2])) < 0.2:
-        print('The minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
+        A_Al = A
+        print('Aluminum: The minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
         plt.figure(figsize=(8,5))
         plt.plot(Xsecs[:len(totdef)],totdef, 'r-')
         plt.plot(Xsecs[len(totdef)], 0.2, 'b*', markersize=20,label='A = {:.2f} $mm^2$'.format(A))
@@ -265,7 +266,8 @@ for i,A in enumerate(Xsecs):
     uSt_t = u_store/(Est*A)
     totdef.append(abs(np.sum(uSt_t[1::2])))
     if abs(np.sum(uSt_t[1::2])) < 0.2:
-        print('The minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
+        A_steel = A
+        print('Steel: The minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
         plt.figure(figsize=(8,5))
         plt.plot(Xsecs[:len(totdef)],totdef, 'r-')
         plt.plot(Xsecs[len(totdef)], 0.2, 'b*', markersize=20,label='A = {:.2f} $mm^2$'.format(A))
@@ -274,6 +276,22 @@ for i,A in enumerate(Xsecs):
         plt.title('Steel Total Deformation vs. Cross-Sectional Area')
         plt.legend();
         break
+```
+
+```{code-cell} ipython3
+#Finding the weights
+
+#Densities:
+rhoSteel = 7870 #kg/m^3 (Average from carbon steel https://amesweb.info/Materials/Density_of_Steel.aspx)
+rhoAl = 2700 #kg/m^3 (from https://www.periodic-table.org/Aluminium-density/)
+
+#weight (N) = density * Xsec Area(mm^2) * number of elements * element length (mm)* g (m/s^2)
+StWeight = rhoSteel/(1000**3) * A_steel * 11 * 300 * 9.81
+AlWeight = rhoAl/(1000**3) * A_Al * 11 * 300 * 9.81
+
+print('''The weight of the steel truss with an element cross-sectional area of {:.2f} mm is {:.2f} N
+The weight of the Aluminum truss with an element cross-sectional area of {:.2f} mm is {:.2f} N'''.format(A_steel, StWeight,
+                                                                                                        A_Al, AlWeight))
 ```
 
 ## References
