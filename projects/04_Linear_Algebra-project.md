@@ -147,19 +147,20 @@ u=np.zeros(2*len(nodes))
 u[2:13] = uf
 
 React = K@u
-
-
-print('The reactions for a steel truss are:')
+#Compensate for Young's modulus and area
+uSt = u/(Est*A)
+uAl = u/(EAl*A)
+print('The reactions for a steel or aluminum truss are:')
 for i, R in enumerate(React):
     print('R_{} = {:.1f} N'.format((i+1), R))
 
 print('\nThe deformations for the steel truss are:')
 for i, u in enumerate(uSt):
-    print('u_{} = {:.1f} mm'.format((i+1), u/(Est*A)))
+    print('u_{} = {:.1f} mm'.format((i+1), u))
 
 print('\nThe deformations for the aluminum truss are:')
 for i, u in enumerate(uAl):
-    print('u_{} = {:.1f} mm'.format((i+1), u/(EAl*A)))
+    print('u_{} = {:.1f} mm'.format((i+1), u))
 ```
 
 ```{code-cell} ipython3
