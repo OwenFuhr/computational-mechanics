@@ -138,27 +138,28 @@ EAl = 70e3
 #Use Scipy to decompose the matrix into PLU components
 P, L, U = lu(K_BC)
 
-#Set up lower triangular matrices for steel and aluminum
-L_EAst = L*Est*A
-L_EAal = L*EAl*A
+#Forward Substitution Solution
+FW_Sol = np.linalg.solve(L,F)
 
-#Forward Substitution Solutions
-FW_StSol = np.linalg.solve(L_EAst,F)
-FW_AlSol = np.linalg.solve(L_EAal, F)
+uf = np.linalg.solve(U,FW_Sol)
 
-u_StSol = np.linalg.solve(U,FW_StSol)
-u_AlSol = np.linalg.solve(U,FW_AlSol)
+u=np.zeros(2*len(nodes))
+u[2:13] = uf
 
-ReactSt = K_BC@u_StSol
-ReactAl = K_BC@u_AlSol
+React = K@u
+
 
 print('The reactions for a steel truss are:')
-for i, R in enumerate(ReactSt):
-    print('R_{} = {} N'.format((i+1), R))
+for i, R in enumerate(React):
+    print('R_{} = {:.1f} N'.format((i+1), R))
 
-print('The reactions for an aluminum truss are:')
-for i, R in enumerate(ReactAl):
-    print('R_{} = {} N'.format((i+1), R))
+print('\nThe deformations for the steel truss are:')
+for i, u in enumerate(uSt):
+    print('u_{} = {:.1f} mm'.format((i+1), u/(Est*A)))
+
+print('\nThe deformations for the aluminum truss are:')
+for i, u in enumerate(uAl):
+    print('u_{} = {:.1f} mm'.format((i+1), u/(EAl*A)))
 ```
 
 ```{code-cell} ipython3
@@ -217,6 +218,9 @@ def f(s):
     plt.ylabel('y (mm)')
     plt.title('Deformation scale = {:.1f}x'.format(s))
     plt.legend(bbox_to_anchor=(1,0.5))
+    
+plt.figure(3,figsize=(8,5))
+f(5)
 ```
 
 ### 3. Determine cross-sectional area
