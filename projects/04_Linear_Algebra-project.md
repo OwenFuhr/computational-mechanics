@@ -145,7 +145,7 @@ uf = np.linalg.solve(U,FW_Sol)
 
 u=np.zeros(2*len(nodes))
 u[2:13] = uf
-
+u_store = u #Store u for use in second part
 React = K@u
 #Compensate for Young's modulus and area
 uSt = u/(Est*A)
@@ -236,7 +236,44 @@ c. What are the weights of the aluminum and steel trusses with the
 chosen cross-sectional areas?
 
 ```{code-cell} ipython3
+#Solving part a and b iteratively
 
+#Set up range of areas
+Amax, step = 100, 0.001
+Xsecs = np.arange(0.1,Amax,step)
+
+#Iterate until the total deformation of aluminum becomes less than 0.2mm
+totdef = []
+
+for i,A in enumerate(Xsecs):
+    uAl_t = u_store/(EAl*A)
+    totdef.append(abs(np.sum(uAl_t[1::2])))
+    if abs(np.sum(uAl_t[1::2])) < 0.2:
+        print('The minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
+        plt.figure(figsize=(8,5))
+        plt.plot(Xsecs[:len(totdef)],totdef, 'r-')
+        plt.plot(Xsecs[len(totdef)], 0.2, 'b*', markersize=20,label='A = {:.2f} $mm^2$'.format(A))
+        plt.xlabel('Cross-Sectional Area ($mm^2$)')
+        plt.ylabel('Total Deformation ($mm$)')
+        plt.title('Aluminum Total Deformation vs. Cross-Sectional Area')
+        plt.legend();
+        break
+
+totdef = []
+
+for i,A in enumerate(Xsecs):
+    uSt_t = u_store/(Est*A)
+    totdef.append(abs(np.sum(uSt_t[1::2])))
+    if abs(np.sum(uSt_t[1::2])) < 0.2:
+        print('The minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
+        plt.figure(figsize=(8,5))
+        plt.plot(Xsecs[:len(totdef)],totdef, 'r-')
+        plt.plot(Xsecs[len(totdef)], 0.2, 'b*', markersize=20,label='A = {:.2f} $mm^2$'.format(A))
+        plt.xlabel('Cross-Sectional Area ($mm^2$)')
+        plt.ylabel('Total Deformation ($mm$)')
+        plt.title('Steel Total Deformation vs. Cross-Sectional Area')
+        plt.legend();
+        break
 ```
 
 ## References
