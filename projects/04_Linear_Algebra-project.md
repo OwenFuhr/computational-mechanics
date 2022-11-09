@@ -150,17 +150,22 @@ React = K@u
 #Compensate for Young's modulus and area
 uSt = u/(Est*A)
 uAl = u/(EAl*A)
+
+#Adapted from Professor's work
+xy={0:'x',1:'y'}
+
 print('The reactions for a steel or aluminum truss are:')
 for i, R in enumerate(React):
-    print('R_{} = {:.1f} N'.format((i+1), R))
+    print('R_{}{} = {:.1f} N'.format(int(i/2)+1,xy[i%2], R))
+    
 
 print('\nThe deformations for the steel truss are:')
 for i, u in enumerate(uSt):
-    print('u_{} = {:.1f} mm'.format((i+1), u))
+    print('u_{}{} = {:.1f} mm'.format(int(i/2)+1,xy[i%2],u))
 
 print('\nThe deformations for the aluminum truss are:')
 for i, u in enumerate(uAl):
-    print('u_{} = {:.1f} mm'.format((i+1), u))
+    print('u_{}{} = {:.1f} mm'.format(int(i/2)+1,xy[i%2],u))
 ```
 
 ```{code-cell} ipython3
@@ -242,15 +247,15 @@ chosen cross-sectional areas?
 Amax, step = 100, 0.005
 Xsecs = np.arange(0.1,Amax,step)
 
-#Iterate until the total deformation of aluminum becomes less than 0.2mm
+#Iterate until the total y deformation of aluminum and steel at node 4 becomes less than 0.2mm, graph results
 totdef = []
 
 for i,A in enumerate(Xsecs):
     uAl_t = u_store/(EAl*A)
-    totdef.append(abs(np.sum(uAl_t[1::2])))
-    if abs(np.sum(uAl_t[1::2])) < 0.2:
+    totdef.append(abs(uAl_t[7]))
+    if abs(uAl_t[7]) < 0.2:
         A_Al = A
-        print('Aluminum: The minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
+        print('Aluminum:\nThe minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
         plt.figure(figsize=(8,5))
         plt.plot(Xsecs[:len(totdef)],totdef, 'r-')
         plt.plot(Xsecs[len(totdef)], 0.2, 'b*', markersize=20,label='A = {:.2f} $mm^2$'.format(A))
@@ -264,10 +269,10 @@ totdef = []
 
 for i,A in enumerate(Xsecs):
     uSt_t = u_store/(Est*A)
-    totdef.append(abs(np.sum(uSt_t[1::2])))
-    if abs(np.sum(uSt_t[1::2])) < 0.2:
+    totdef.append(abs(uSt_t[7]))
+    if abs(uSt_t[7]) < 0.2:
         A_steel = A
-        print('Steel: The minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
+        print('\nSteel:\nThe minimum cross-sectional area for deformations less than 0.2 mm is {:.2f} mm^2'.format(A))
         plt.figure(figsize=(8,5))
         plt.plot(Xsecs[:len(totdef)],totdef, 'r-')
         plt.plot(Xsecs[len(totdef)], 0.2, 'b*', markersize=20,label='A = {:.2f} $mm^2$'.format(A))
@@ -290,6 +295,7 @@ StWeight = rhoSteel/(1000**3) * A_steel * 11 * 300 * 9.81
 AlWeight = rhoAl/(1000**3) * A_Al * 11 * 300 * 9.81
 
 print('''The weight of the steel truss with an element cross-sectional area of {:.2f} mm is {:.2f} N
+
 The weight of the Aluminum truss with an element cross-sectional area of {:.2f} mm is {:.2f} N'''.format(A_steel, StWeight,
                                                                                                         A_Al, AlWeight))
 ```
@@ -297,3 +303,7 @@ The weight of the Aluminum truss with an element cross-sectional area of {:.2f} 
 ## References
 
 1. <https://en.wikipedia.org/wiki/Direct_stiffness_method>
+
+```{code-cell} ipython3
+
+```
