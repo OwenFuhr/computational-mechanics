@@ -268,3 +268,7 @@ __Table of derivatives and the corresponding forward, backward, and central diff
 * How to approximate derivatives using backward difference methods
 * How to approximate derivatives using central difference methods
 * How to approximate higher order derivatives with forward, backward, and central differences
+
+```{code-cell} ipython3
+
+```
