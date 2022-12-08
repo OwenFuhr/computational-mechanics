@@ -274,7 +274,7 @@ w_{5}
 
 ```{code-cell} ipython3
 L=1
-h=L/6
+
 E=200e9
 I=0.01**4/12
 q=100
@@ -287,7 +287,7 @@ A=np.diag(np.ones(5)*6)\
 A[0,0]+=-1
 A[-1,-1]+=-1
 
-b=-np.ones(5)*q/E/I*h**4
+b=-np.ones(div)*q/E/I*h**4
 
 w=np.linalg.solve(A,b)
 xnum=np.arange(0,L+h/2,h)
