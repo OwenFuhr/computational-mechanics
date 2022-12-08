@@ -594,7 +594,7 @@ for i in range(0,tsteps-1):
 ```
 
 ```{code-cell} ipython3
-for i in range(0,N):
+for i in range(0,2):
     plt.plot(t,y[i,:],'o-',label='y_{}'.format(i),alpha=0.6);
 plt.legend(bbox_to_anchor=(1,0.5),loc='center left')
 plt.xlabel('time(s)')
